@@ -4,7 +4,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 # VERSION
 
-version 0.01
+version 0.02
 
 # SYNOPSIS
 
@@ -21,14 +21,14 @@ in lib/YourCmd.pm
     use Command::Do;
     
 
-    fld name => {
-        require => 1,
-        alias   => 'n',
-        optspec => '=s'
+    field name => {
+        required => 1,
+        alias    => 'n',
+        optspec  => '=s'
     };
     
 
-    mth run => {
+    method run => {
         
 
         input => ['name'],
@@ -64,12 +64,12 @@ configuration and its dependencies are trivial.
     use Command::Do;
     
 
-    mxn all  => {
+    mixin all  => {
         filters => [qw/trim strip/]
     };
     
 
-    fld file => {
+    field file => {
         mixin   => 'all',
         optspec => 's@', # 100% Getopt::Long Compliant
         alias   => ['f'] # directive is attached to the option spec
@@ -77,7 +77,7 @@ configuration and its dependencies are trivial.
     
 
     # self-validating routines
-    mth run => {
+    method run => {
     
 
         input => ['file'],
@@ -101,14 +101,17 @@ configuration and its dependencies are trivial.
     
 
     use YourCmd;
-    set {
+    set
+    {
         # each command is independent and can invoke sub-classes
-        classes => 1,
+        classes => 1, # loads and registers yourcmd::*
+        
+
     };
     
 
     # happens before new
-    bld sub {
+    build sub {
         
 
         my $self = shift;
@@ -129,11 +132,10 @@ configuration and its dependencies are trivial.
         my $self = shift;
         
 
-        # this command invokes others
         my $next_command = $self->{next_command}; # e.g. sub_cmd
         
 
-        # see Validation::Class
+        # invokes other commands using the class method, see Validation::Class
         my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
         
 
@@ -155,7 +157,7 @@ are deduced from the field name and alias directive.
     use Command::Do;
     
 
-    fld verbose => {
+    field verbose => {
         optspec => '', # sets flag, same as '!'
         alias   => 'v'
     };

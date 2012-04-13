@@ -8,5 +8,4 @@ README.mkdn
 eg/lib/MyScript.pm
 eg/script.pl
 lib/Command/Do.pm
-lib/Command/Do/Directives.pm
 t/00-load.t

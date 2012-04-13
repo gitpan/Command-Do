@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-  $Command::Do::VERSION = '0.01';
+  $Command::Do::VERSION = '0.02';
 }
 
 use Validation::Class;
@@ -12,17 +12,17 @@ use Getopt::Long;
 
 use Command::Do::Directives;
 
-our $VERSION = '0.01'; # VERSION
+our $VERSION = '0.02'; # VERSION
  
 Validation::Class::Exporter->apply_spec(
     routines => ['run'],
     settings => [ base => [
-            'Command::Do', 'Command::Do::Directives'
+            'Command::Do'
         ]
     ]
 );
 
-bld sub {
+build sub {
     
     my $self = shift;
     
@@ -62,6 +62,10 @@ bld sub {
     
 };
 
+# the optspec directive specifies the Getopt::Long option specification
+# for a given field
+dir optspec => sub {1}; #noop
+
 
 1;
 __END__
@@ -73,7 +77,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -88,13 +92,13 @@ in lib/YourCmd.pm
     
     use Command::Do;
     
-    fld name => {
-        require => 1,
-        alias   => 'n',
-        optspec => '=s'
+    field name => {
+        required => 1,
+        alias    => 'n',
+        optspec  => '=s'
     };
     
-    mth run => {
+    method run => {
         
         input => ['name'],
         using => sub {
@@ -125,18 +129,18 @@ configuration and its dependencies are trivial.
     package yourcmd;
     use Command::Do;
     
-    mxn all  => {
+    mixin all  => {
         filters => [qw/trim strip/]
     };
     
-    fld file => {
+    field file => {
         mixin   => 'all',
         optspec => 's@', # 100% Getopt::Long Compliant
         alias   => ['f'] # directive is attached to the option spec
     }; 
     
     # self-validating routines
-    mth run => {
+    method run => {
     
         input => ['file'],
         using => sub {
@@ -154,13 +158,15 @@ configuration and its dependencies are trivial.
     package yourcmd;
     
     use YourCmd;
-    set {
+    set
+    {
         # each command is independent and can invoke sub-classes
-        classes => 1,
+        classes => 1, # loads and registers yourcmd::*
+        
     };
     
     # happens before new
-    bld sub {
+    build sub {
         
         my $self = shift;
         
@@ -174,10 +180,9 @@ configuration and its dependencies are trivial.
     
         my $self = shift;
         
-        # this command invokes others
         my $next_command = $self->{next_command}; # e.g. sub_cmd
         
-        # see Validation::Class
+        # invokes other commands using the class method, see Validation::Class
         my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
         
         return $sub->run;
@@ -195,7 +200,7 @@ are deduced from the field name and alias directive.
     package ...;
     use Command::Do;
     
-    fld verbose => {
+    field verbose => {
         optspec => '', # sets flag, same as '!'
         alias   => 'v'
     };

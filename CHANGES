@@ -1,4 +1,8 @@
 This file documents the revision history for the Perl library Command::Do.
 
-0.01_01 (2012-03-14)
+0.02 (2012-04-13)
+    * update POD (using full keywords)
+    * removed C::D::Directives
+
+0.01 (2012-04-12)
     * commence brain dump
