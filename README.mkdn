@@ -4,7 +4,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 # VERSION
 
-version 0.03
+version 0.04
 
 # SYNOPSIS
 

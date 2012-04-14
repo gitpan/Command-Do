@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-  $Command::Do::VERSION = '0.03';
+  $Command::Do::VERSION = '0.04';
 }
 
 use Validation::Class;
@@ -12,10 +12,9 @@ use Getopt::Long;
 
 use Command::Do::Directives;
 
-our $VERSION = '0.03'; # VERSION
+our $VERSION = '0.04'; # VERSION
  
 Validation::Class::Exporter->apply_spec(
-    routines => ['run'],
     settings => [ base => [
             'Command::Do'
         ]
@@ -77,7 +76,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
