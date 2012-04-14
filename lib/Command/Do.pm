@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-  $Command::Do::VERSION = '0.02';
+  $Command::Do::VERSION = '0.03';
 }
 
 use Validation::Class;
@@ -12,7 +12,7 @@ use Getopt::Long;
 
 use Command::Do::Directives;
 
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
  
 Validation::Class::Exporter->apply_spec(
     routines => ['run'],
@@ -77,7 +77,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -113,6 +113,55 @@ and, finally, at the command line:
 
     $ yourcmd --name "Handsome"
     You sure have a nice name, Handsome
+
+or, ... use one CLI (command-line interface) to rule them all.
+
+    #!/usr/bin/env perl
+    
+    package Bit;
+    
+    use Command::Do;
+    
+    fld command => {
+    
+        required   => 1,
+        min_length => 2,
+        filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
+    
+    };
+    
+    mth run => {
+    
+        input => ['command'],
+        using => sub {
+        
+            my ($self) = @_;
+            
+            my $class = $self->class($self->command);
+            
+            if ($class) {
+                
+                $class->run # run child command class
+                
+            }
+        
+        }
+    
+    };
+    
+    bld sub {
+        
+        my ($self) = @_;
+        
+        $self->command(shift @ARGV); 
+        
+    };
+    
+    package main;
+    
+        Bit->new->run
+    
+    1;
 
 =head1 DESCRIPTION
 
@@ -156,7 +205,6 @@ configuration and its dependencies are trivial.
 ... sometimes you need a suite of commands:
 
     package yourcmd;
-    
     use YourCmd;
     set
     {
@@ -211,8 +259,7 @@ are deduced from the field name and alias directive.
 Furthermore, in addition to being a class that represents a command that does
 stuff, Command::Do is:
 
-    com-man-do:
-        -- A soldier specially trained to carry out raids.
+    com-man-do: A soldier specially trained to carry out raids.
     
     In English, the term commando means a specific kind of individual soldier or
     military unit. In contemporary usage, commando usually means elite light

@@ -19,4 +19,4 @@ resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Command-Do
   homepage: http://ana.io/
   repository: http://github.com/alnewkirk/Command-Do.git
-version: 0.02
+version: 0.03
