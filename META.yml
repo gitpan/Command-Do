@@ -1,12 +1,12 @@
 ---
-abstract: 'The power of the Sun in the palm of your hand'
+abstract: "The power of the Sun in the palm of your hand\r"
 author:
   - 'Al Newkirk <awncorp@cpan.org>'
 build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300010, CPAN::Meta::Converter version 2.120630'
+generated_by: 'Dist::Zilla version 4.300014, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,4 +19,4 @@ resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Command-Do
   homepage: http://ana.io/
   repository: http://github.com/alnewkirk/Command-Do.git
-version: 0.04
+version: 0.05

@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-  $Command::Do::VERSION = '0.04';
+  $Command::Do::VERSION = '0.05';
 }
 
 use Validation::Class;
@@ -12,7 +12,7 @@ use Getopt::Long;
 
 use Command::Do::Directives;
 
-our $VERSION = '0.04'; # VERSION
+our $VERSION = '0.05'; # VERSION
  
 Validation::Class::Exporter->apply_spec(
     settings => [ base => [
@@ -61,9 +61,9 @@ build sub {
     
 };
 
+dir optspec => sub {1}; # noop
 # the optspec directive specifies the Getopt::Long option specification
 # for a given field
-dir optspec => sub {1}; #noop
 
 
 1;
@@ -76,7 +76,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -120,6 +120,13 @@ or, ... use one CLI (command-line interface) to rule them all.
     package Bit;
     
     use Command::Do;
+    
+    set {
+        
+        # load child classes (commands)
+        classes => 1
+        
+    };
     
     fld command => {
     
@@ -172,77 +179,16 @@ Command::Do is both simple, effective and anti-complicated. It is very
 unassumming and flexible. It does not impose a particular application
 configuration and its dependencies are trivial.
 
-... sometimes you need an all-in-one command script:
+It doesn't provide a mechanism for rendering help and/or command and options
+screens. The trend I'd recommend for that purpose is to simply display the
+command's POD, if that doesn't suit you, building your own help text rendering
+function is trivial.
 
-    package yourcmd;
-    use Command::Do;
-    
-    mixin all  => {
-        filters => [qw/trim strip/]
-    };
-    
-    field file => {
-        mixin   => 'all',
-        optspec => 's@', # 100% Getopt::Long Compliant
-        alias   => ['f'] # directive is attached to the option spec
-    }; 
-    
-    # self-validating routines
-    method run => {
-    
-        input => ['file'],
-        using => sub {
-            
-            exit print join "\n", @{shift->file};
-            
-        }
-        
-    };
-    
-    yourcmd->run;
-
-... sometimes you need a suite of commands:
-
-    package yourcmd;
-    use YourCmd;
-    set
-    {
-        # each command is independent and can invoke sub-classes
-        classes => 1, # loads and registers yourcmd::*
-        
-    };
-    
-    # happens before new
-    build sub {
-        
-        my $self = shift;
-        
-        $self->{next_command} = shift @ARGV;
-        
-        return $self;
-        
-    };
-    
-    sub run {
-    
-        my $self = shift;
-        
-        my $next_command = $self->{next_command}; # e.g. sub_cmd
-        
-        # invokes other commands using the class method, see Validation::Class
-        my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
-        
-        return $sub->run;
-        
-    };
-    
-    yourcmd->run;
-
-Please note: Command::Do is very minimalistic and tries to remain unassuming,
-each class field (see L<Validation::Class>) that is to be used as a command line
-option must have an C<optspec> directive defined. The optspec directive should
-be a valid L<Getopt::Long> option specification minus a name and aliases which
-are deduced from the field name and alias directive.
+Command::Do is very minimalistic and tries to remain unassuming, each class
+field (see L<Validation::Class>) that is to be used as a command line option
+must have an C<optspec> directive defined. The optspec directive should be a
+valid L<Getopt::Long> option specification minus a name and aliases which are
+deduced from the field name and alias directive.
 
     package ...;
     use Command::Do;
