@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "The power of the Sun in the palm of your hand\r",
+  "ABSTRACT" => "The power of the Sun in the palm of your hand",
   "AUTHOR" => "Al Newkirk <awncorp\@cpan.org>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
@@ -21,9 +21,9 @@ my %WriteMakefileArgs = (
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
     "Getopt::Long" => "2.38",
-    "Validation::Class" => "5.95"
+    "Validation::Class" => "7.11"
   },
-  "VERSION" => "0.05",
+  "VERSION" => "0.06",
   "test" => {
     "TESTS" => "t/*.t"
   }

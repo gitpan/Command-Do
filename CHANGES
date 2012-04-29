@@ -1,8 +1,5 @@
 This file documents the revision history for the Perl library Command::Do.
 
-0.05 (2012-04-15)
-    * misc POD changes
-
 0.04 (2012-04-13)
     * removed BAD exported method (left-lingering)
 
