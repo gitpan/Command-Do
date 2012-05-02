@@ -2,70 +2,73 @@
 
 package Command::Do;
 {
-  $Command::Do::VERSION = '0.06';
+    $Command::Do::VERSION = '0.07';
 }
 
 use Validation::Class;
 use Validation::Class::Exporter;
+
 use Getopt::Long;
 
-our $VERSION = '0.06'; # VERSION
- 
-Validation::Class::Exporter->apply_spec(
-    settings => [ base => [
-            'Command::Do'
-        ]
-    ]
-);
+use Command::Do::Directives;
+
+our $VERSION = '0.07';    # VERSION
+
+Validation::Class::Exporter->apply_spec(settings => [base => ['Command::Do']]);
 
 build sub {
-    
+
     my $self = shift;
-    
+
     # build an opt sepc
     my %opt_spec = ();
-    
-    while (my($name, $opts) = each(%{$self->fields})) {
-        
+
+    while (my ($name, $opts) = each(%{$self->fields})) {
+
         if (defined $opts->{optspec}) {
-            
+
             my $conf = $name;
-            
+
             $conf .= "!" unless $opts->{optspec};
-            
+
             if ($opts->{alias}) {
-                
+
                 $conf = (
-                    "ARRAY" eq ref $opts->{alias} ?
-                    join "|", @{$opts->{alias}} : "$opts->{alias}"
+                    "ARRAY" eq ref $opts->{alias}
+                    ? join "|",
+                    @{$opts->{alias}}
+                    : "$opts->{alias}"
                 ) . "|$conf";
-                
+
             }
-            
-            $conf .= $opts->{optspec} =~ /^=/ ?
-                $opts->{optspec}    :
-                "=$opts->{optspec}" ;
-            
+
+            $conf .=
+                $opts->{optspec} =~ /^=/
+              ? $opts->{optspec}
+              : "=$opts->{optspec}";
+
             $opt_spec{$conf} = \$self->params->{$name};
-            
+
         }
-        
+
     }
-    
+
     GetOptions %opt_spec;
-    
+
     return $self;
-    
+
 };
 
 # the optspec directive specifies the Getopt::Long option specification
-# for a given field
-dir optspec => sub {1}; #noop
+# for a given field, since there is no validation involved the following
+# code exists solely to register the new optspec directive.
+dir optspec => sub {1};    #noop
 
 
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -74,7 +77,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -89,18 +92,18 @@ in lib/YourCmd.pm
     
     use Command::Do;
     
-    field name => {
+    fld name => {
         required => 1,
         alias    => 'n',
         optspec  => '=s'
     };
     
-    method run => {
+    mth run => {
         
         input => ['name'],
         using => sub {
             
-            exit print "You sure have a nice name, " . shift->name;
+            exit print "You sure have a nice name, ", shift->name, "\n";
             
         }
         
@@ -134,11 +137,11 @@ or, ... use one CLI (command-line interface) to rule them all.
         
             my ($self) = @_;
             
-            my $class = $self->class($self->command);
+            my $class = $self->class($self->command); # init child command
             
             if ($class) {
                 
-                $class->run # run child command class
+                $class->run # run child command
                 
             }
         
@@ -150,7 +153,7 @@ or, ... use one CLI (command-line interface) to rule them all.
         
         my ($self) = @_;
         
-        $self->command(shift @ARGV); 
+        $self->command(shift @ARGV); # first arg is child command name
         
     };
     
@@ -191,8 +194,9 @@ configuration and its dependencies are trivial.
         input => ['file'],
         using => sub {
             
+            # because the opt_spec is s@, file is always an array
             exit print join "\n", @{shift->file};
-            
+                       
         }
         
     };
@@ -202,7 +206,7 @@ configuration and its dependencies are trivial.
 ... sometimes you need a suite of commands:
 
     package yourcmd;
-    use YourCmd;
+    use Command::Do;
     set
     {
         # each command is independent and can invoke sub-classes
@@ -210,12 +214,12 @@ configuration and its dependencies are trivial.
         
     };
     
-    # happens before new
+    # happens during new
     build sub {
         
         my $self = shift;
         
-        $self->{next_command} = shift @ARGV;
+        $self->{handler} = shift @ARGV;
         
         return $self;
         
@@ -225,10 +229,10 @@ configuration and its dependencies are trivial.
     
         my $self = shift;
         
-        my $next_command = $self->{next_command}; # e.g. sub_cmd
+        my $handler = $self->{handler}; # e.g. sub_cmd
         
         # invokes other commands using the class method, see Validation::Class
-        my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
+        my $sub = $self->class($handler); # load lib/YourCmd/SubCmd.pm
         
         return $sub->run;
         
@@ -242,7 +246,7 @@ option must have an C<optspec> directive defined. The optspec directive should
 be a valid L<Getopt::Long> option specification minus a name and aliases which
 are deduced from the field name and alias directive.
 
-    package ...;
+    package MyCommand;
     use Command::Do;
     
     field verbose => {
@@ -254,7 +258,7 @@ are deduced from the field name and alias directive.
     # GetOptions('verbose|v!' => \$variable);
 
 Furthermore, in addition to being a class that represents a command that does
-stuff, Command::Do is:
+stuff, Command::Do is also described as follows:
 
     com-man-do: A soldier specially trained to carry out raids.
     

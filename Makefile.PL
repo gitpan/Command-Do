@@ -20,10 +20,10 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
-    "Getopt::Long" => "2.38",
-    "Validation::Class" => "7.11"
+    "Getopt::Long" => 0,
+    "Validation::Class" => 0
   },
-  "VERSION" => "0.06",
+  "VERSION" => "0.07",
   "test" => {
     "TESTS" => "t/*.t"
   }

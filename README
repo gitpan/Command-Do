@@ -2,7 +2,7 @@ NAME
     Command::Do - The power of the Sun in the palm of your hand
 
 VERSION
-    version 0.06
+    version 0.07
 
 SYNOPSIS
     in yourcmd:
@@ -16,18 +16,18 @@ SYNOPSIS
     
         use Command::Do;
     
-        field name => {
+        fld name => {
             required => 1,
             alias    => 'n',
             optspec  => '=s'
         };
     
-        method run => {
+        mth run => {
         
             input => ['name'],
             using => sub {
             
-                exit print "You sure have a nice name, " . shift->name;
+                exit print "You sure have a nice name, ", shift->name, "\n";
             
             }
         
@@ -61,11 +61,11 @@ SYNOPSIS
         
                 my ($self) = @_;
             
-                my $class = $self->class($self->command);
+                my $class = $self->class($self->command); # init child command
             
                 if ($class) {
                 
-                    $class->run # run child command class
+                    $class->run # run child command
                 
                 }
         
@@ -77,7 +77,7 @@ SYNOPSIS
         
             my ($self) = @_;
         
-            $self->command(shift @ARGV); 
+            $self->command(shift @ARGV); # first arg is child command name
         
         };
     
@@ -118,8 +118,9 @@ DESCRIPTION
             input => ['file'],
             using => sub {
             
+                # because the opt_spec is s@, file is always an array
                 exit print join "\n", @{shift->file};
-            
+                       
             }
         
         };
@@ -129,7 +130,7 @@ DESCRIPTION
     ... sometimes you need a suite of commands:
 
         package yourcmd;
-        use YourCmd;
+        use Command::Do;
         set
         {
             # each command is independent and can invoke sub-classes
@@ -137,12 +138,12 @@ DESCRIPTION
         
         };
     
-        # happens before new
+        # happens during new
         build sub {
         
             my $self = shift;
         
-            $self->{next_command} = shift @ARGV;
+            $self->{handler} = shift @ARGV;
         
             return $self;
         
@@ -152,10 +153,10 @@ DESCRIPTION
     
             my $self = shift;
         
-            my $next_command = $self->{next_command}; # e.g. sub_cmd
+            my $handler = $self->{handler}; # e.g. sub_cmd
         
             # invokes other commands using the class method, see Validation::Class
-            my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
+            my $sub = $self->class($handler); # load lib/YourCmd/SubCmd.pm
         
             return $sub->run;
         
@@ -170,7 +171,7 @@ DESCRIPTION
     minus a name and aliases which are deduced from the field name and alias
     directive.
 
-        package ...;
+        package MyCommand;
         use Command::Do;
     
         field verbose => {
@@ -182,7 +183,7 @@ DESCRIPTION
         # GetOptions('verbose|v!' => \$variable);
 
     Furthermore, in addition to being a class that represents a command that
-    does stuff, Command::Do is:
+    does stuff, Command::Do is also described as follows:
 
         com-man-do: A soldier specially trained to carry out raids.
     

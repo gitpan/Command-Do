@@ -4,7 +4,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 # VERSION
 
-version 0.06
+version 0.07
 
 # SYNOPSIS
 
@@ -21,21 +21,21 @@ in lib/YourCmd.pm
     use Command::Do;
     
 
-    field name => {
+    fld name => {
         required => 1,
         alias    => 'n',
         optspec  => '=s'
     };
     
 
-    method run => {
+    mth run => {
         
 
         input => ['name'],
         using => sub {
             
 
-            exit print "You sure have a nice name, " . shift->name;
+            exit print "You sure have a nice name, ", shift->name, "\n";
             
 
         }
@@ -80,13 +80,13 @@ or, ... use one CLI (command-line interface) to rule them all.
             my ($self) = @_;
             
 
-            my $class = $self->class($self->command);
+            my $class = $self->class($self->command); # init child command
             
 
             if ($class) {
                 
 
-                $class->run # run child command class
+                $class->run # run child command
                 
 
             }
@@ -104,7 +104,7 @@ or, ... use one CLI (command-line interface) to rule them all.
         my ($self) = @_;
         
 
-        $self->command(shift @ARGV); 
+        $self->command(shift @ARGV); # first arg is child command name
         
 
     };
@@ -154,8 +154,9 @@ configuration and its dependencies are trivial.
         using => sub {
             
 
+            # because the opt_spec is s@, file is always an array
             exit print join "\n", @{shift->file};
-            
+                       
 
         }
         
@@ -168,7 +169,7 @@ configuration and its dependencies are trivial.
 ... sometimes you need a suite of commands:
 
     package yourcmd;
-    use YourCmd;
+    use Command::Do;
     set
     {
         # each command is independent and can invoke sub-classes
@@ -178,14 +179,14 @@ configuration and its dependencies are trivial.
     };
     
 
-    # happens before new
+    # happens during new
     build sub {
         
 
         my $self = shift;
         
 
-        $self->{next_command} = shift @ARGV;
+        $self->{handler} = shift @ARGV;
         
 
         return $self;
@@ -200,11 +201,11 @@ configuration and its dependencies are trivial.
         my $self = shift;
         
 
-        my $next_command = $self->{next_command}; # e.g. sub_cmd
+        my $handler = $self->{handler}; # e.g. sub_cmd
         
 
         # invokes other commands using the class method, see Validation::Class
-        my $sub = $self->class($next_command); # load lib/YourCmd/SubCmd.pm
+        my $sub = $self->class($handler); # load lib/YourCmd/SubCmd.pm
         
 
         return $sub->run;
@@ -221,7 +222,7 @@ option must have an `optspec` directive defined. The optspec directive should
 be a valid [Getopt::Long](http://search.cpan.org/perldoc?Getopt::Long) option specification minus a name and aliases which
 are deduced from the field name and alias directive.
 
-    package ...;
+    package MyCommand;
     use Command::Do;
     
 
@@ -235,7 +236,7 @@ are deduced from the field name and alias directive.
     # GetOptions('verbose|v!' => \$variable);
 
 Furthermore, in addition to being a class that represents a command that does
-stuff, Command::Do is:
+stuff, Command::Do is also described as follows:
 
     com-man-do: A soldier specially trained to carry out raids.
     
