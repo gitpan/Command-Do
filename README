@@ -2,7 +2,7 @@ NAME
     Command::Do - The power of the Sun in the palm of your hand
 
 VERSION
-    version 0.07
+    version 0.08
 
 SYNOPSIS
     in yourcmd:
@@ -37,55 +37,6 @@ SYNOPSIS
 
         $ yourcmd --name "Handsome"
         You sure have a nice name, Handsome
-
-    or, ... use one CLI (command-line interface) to rule them all.
-
-        #!/usr/bin/env perl
-    
-        package Bit;
-    
-        use Command::Do;
-    
-        fld command => {
-    
-            required   => 1,
-            min_length => 2,
-            filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
-    
-        };
-    
-        mth run => {
-    
-            input => ['command'],
-            using => sub {
-        
-                my ($self) = @_;
-            
-                my $class = $self->class($self->command); # init child command
-            
-                if ($class) {
-                
-                    $class->run # run child command
-                
-                }
-        
-            }
-    
-        };
-    
-        bld sub {
-        
-            my ($self) = @_;
-        
-            $self->command(shift @ARGV); # first arg is child command name
-        
-        };
-    
-        package main;
-    
-            Bit->new->run
-    
-        1;
 
 DESCRIPTION
     Command::Do is an extremely easy method for creating, validating,
@@ -138,12 +89,24 @@ DESCRIPTION
         
         };
     
-        # happens during new
+        # pass args to children
+        Getopt::Long::Configure(qw(pass_through));
+    
+        # the child command
+        fld command => {
+    
+            required   => 1,
+            min_length => 2,
+            filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
+    
+        };
+    
+        # happens at instantiation
         build sub {
         
             my $self = shift;
         
-            $self->{handler} = shift @ARGV;
+            $self->command(shift @ARGV);
         
             return $self;
         
@@ -153,12 +116,16 @@ DESCRIPTION
     
             my $self = shift;
         
-            my $handler = $self->{handler}; # e.g. sub_cmd
+            my $command = $self->command;
         
-            # invokes other commands using the class method, see Validation::Class
-            my $sub = $self->class($handler); # load lib/YourCmd/SubCmd.pm
+            die $self->error_to_string("\n") unless $command;
         
-            return $sub->run;
+            # invokes child command using the class method ...
+            # see Validation::Class
+        
+            my $subcmd = $self->class($command); # load lib/YourCmd/SubCmd.pm
+        
+            return $subcmd->run;
         
         };
     

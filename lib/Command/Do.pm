@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-    $Command::Do::VERSION = '0.07';
+    $Command::Do::VERSION = '0.08';
 }
 
 use Validation::Class;
@@ -12,7 +12,7 @@ use Getopt::Long;
 
 use Command::Do::Directives;
 
-our $VERSION = '0.07';    # VERSION
+our $VERSION = '0.08';    # VERSION
 
 Validation::Class::Exporter->apply_spec(settings => [base => ['Command::Do']]);
 
@@ -62,6 +62,7 @@ build sub {
 # the optspec directive specifies the Getopt::Long option specification
 # for a given field, since there is no validation involved the following
 # code exists solely to register the new optspec directive.
+
 dir optspec => sub {1};    #noop
 
 
@@ -77,7 +78,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -113,55 +114,6 @@ and, finally, at the command line:
 
     $ yourcmd --name "Handsome"
     You sure have a nice name, Handsome
-
-or, ... use one CLI (command-line interface) to rule them all.
-
-    #!/usr/bin/env perl
-    
-    package Bit;
-    
-    use Command::Do;
-    
-    fld command => {
-    
-        required   => 1,
-        min_length => 2,
-        filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
-    
-    };
-    
-    mth run => {
-    
-        input => ['command'],
-        using => sub {
-        
-            my ($self) = @_;
-            
-            my $class = $self->class($self->command); # init child command
-            
-            if ($class) {
-                
-                $class->run # run child command
-                
-            }
-        
-        }
-    
-    };
-    
-    bld sub {
-        
-        my ($self) = @_;
-        
-        $self->command(shift @ARGV); # first arg is child command name
-        
-    };
-    
-    package main;
-    
-        Bit->new->run
-    
-    1;
 
 =head1 DESCRIPTION
 
@@ -214,12 +166,24 @@ configuration and its dependencies are trivial.
         
     };
     
-    # happens during new
+    # pass args to children
+    Getopt::Long::Configure(qw(pass_through));
+    
+    # the child command
+    fld command => {
+    
+        required   => 1,
+        min_length => 2,
+        filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
+    
+    };
+    
+    # happens at instantiation
     build sub {
         
         my $self = shift;
         
-        $self->{handler} = shift @ARGV;
+        $self->command(shift @ARGV);
         
         return $self;
         
@@ -229,12 +193,16 @@ configuration and its dependencies are trivial.
     
         my $self = shift;
         
-        my $handler = $self->{handler}; # e.g. sub_cmd
+        my $command = $self->command;
         
-        # invokes other commands using the class method, see Validation::Class
-        my $sub = $self->class($handler); # load lib/YourCmd/SubCmd.pm
+        die $self->error_to_string("\n") unless $command;
         
-        return $sub->run;
+        # invokes child command using the class method ...
+        # see Validation::Class
+        
+        my $subcmd = $self->class($command); # load lib/YourCmd/SubCmd.pm
+        
+        return $subcmd->run;
         
     };
     
