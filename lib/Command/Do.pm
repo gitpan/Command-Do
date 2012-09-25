@@ -2,17 +2,22 @@
 
 package Command::Do;
 {
-    $Command::Do::VERSION = '0.08';
+    $Command::Do::VERSION = '0.09';
+}
+
+BEGIN {
+
+    our $ARGV = [@ARGV];
+
+    use Getopt::Long;
+    Getopt::Long::Configure(qw(pass_through));
+
 }
 
 use Validation::Class;
 use Validation::Class::Exporter;
 
-use Getopt::Long;
-
-use Command::Do::Directives;
-
-our $VERSION = '0.08';    # VERSION
+our $VERSION = '0.09';    # VERSION
 
 Validation::Class::Exporter->apply_spec(settings => [base => ['Command::Do']]);
 
@@ -55,6 +60,8 @@ build sub {
 
     GetOptions %opt_spec;
 
+    @ARGV = @$Command::Do::ARGV;    # always restore @ARGV
+
     return $self;
 
 };
@@ -63,7 +70,7 @@ build sub {
 # for a given field, since there is no validation involved the following
 # code exists solely to register the new optspec directive.
 
-dir optspec => sub {1};    #noop
+dir optspec => sub {1};             #noop
 
 
 1;
@@ -78,7 +85,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
@@ -148,7 +155,7 @@ configuration and its dependencies are trivial.
             
             # because the opt_spec is s@, file is always an array
             exit print join "\n", @{shift->file};
-                       
+            
         }
         
     };

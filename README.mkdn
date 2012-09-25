@@ -4,7 +4,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 # VERSION
 
-version 0.08
+version 0.09
 
 # SYNOPSIS
 
@@ -86,7 +86,7 @@ configuration and its dependencies are trivial.
 
             # because the opt_spec is s@, file is always an array
             exit print join "\n", @{shift->file};
-                       
+            
 
         }
         
