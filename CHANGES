@@ -1,5 +1,8 @@
 This file documents the revision history for the Perl library Command::Do.
 
+0.09 (2012-09-25)
+    * fixed broken dependency, released new version
+
 0.04 (2012-04-13)
     * removed BAD exported method (left-lingering)
 
