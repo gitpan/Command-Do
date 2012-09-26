@@ -2,7 +2,7 @@
 
 package Command::Do;
 {
-    $Command::Do::VERSION = '0.10';
+    $Command::Do::VERSION = '0.11';
 }
 
 BEGIN {
@@ -17,11 +17,13 @@ BEGIN {
 use Validation::Class;
 use Validation::Class::Exporter;
 
-our $VERSION = '0.10';    # VERSION
+our $VERSION = '0.11';    # VERSION
 
 Validation::Class::Exporter->apply_spec(settings => [base => ['Command::Do']]);
 
 build sub {
+
+    @ARGV = @$Command::Do::ARGV;    # always restore @ARGV
 
     my $self = shift;
 
@@ -60,8 +62,6 @@ build sub {
 
     GetOptions %opt_spec;
 
-    @ARGV = @$Command::Do::ARGV;    # always restore @ARGV
-
     return $self;
 
 };
@@ -70,7 +70,7 @@ build sub {
 # for a given field, since there is no validation involved the following
 # code exists solely to register the new optspec directive.
 
-dir optspec => sub {1};             #noop
+dir optspec => sub {1};    #noop
 
 
 1;
@@ -84,7 +84,7 @@ Command::Do - The power of the Sun in the palm of your hand
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
