@@ -4,7 +4,7 @@ Command::Do - Simple Command-Line Interfaces
 
 # VERSION
 
-version 0.120000
+version 0.120001
 
 # SYNOPSIS
 

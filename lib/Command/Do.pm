@@ -6,7 +6,7 @@ use Validation::Class;
 use Validation::Class::Exporter;
 use Smart::Options;
 
-our $VERSION = '0.120000'; # VERSION
+our $VERSION = '0.120001'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -74,7 +74,7 @@ Command::Do - Simple Command-Line Interfaces
 
 =head1 VERSION
 
-version 0.120000
+version 0.120001
 
 =head1 SYNOPSIS
 

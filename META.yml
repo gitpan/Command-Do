@@ -17,6 +17,6 @@ requires:
   Validation::Class: 7.900052
 resources:
   bugtracker: https://github.com/alnewkirk/Command-Do/issues
-  homepage: https://metacpan.org/module/Command::Do
+  homepage: http://search.cpan.org/dist/Command-Do/
   repository: git://github.com/alnewkirk/Command-Do.git
-version: 0.120000
+version: 0.120001
