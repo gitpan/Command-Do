@@ -1,22 +1,22 @@
 ---
-abstract: 'The power of the Sun in the palm of your hand'
+abstract: 'Simple Command-Line Interfaces'
 author:
-  - 'Al Newkirk <awncorp@cpan.org>'
+  - 'Al Newkirk <anewkirk@ana.io>'
 build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300021, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.130880'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: Command-Do
 requires:
-  Getopt::Long: 0
-  Validation::Class: 0
+  Smart::Options: 0.053
+  Validation::Class: 7.900052
 resources:
-  bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Command-Do
-  homepage: http://ana.io/
-  repository: http://github.com/alnewkirk/Command-Do.git
-version: 0.11
+  bugtracker: https://github.com/alnewkirk/Command-Do/issues
+  homepage: https://metacpan.org/module/Command::Do
+  repository: git://github.com/alnewkirk/Command-Do.git
+version: 0.120000

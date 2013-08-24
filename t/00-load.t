@@ -1,4 +1,5 @@
-use Test::More tests => 1;
+use Test::More;
 
-# load module
-BEGIN { use_ok( 'Command::Do' ) }
+use_ok 'Command::Do';
+
+done_testing;

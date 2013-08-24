@@ -9,8 +9,8 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "The power of the Sun in the palm of your hand",
-  "AUTHOR" => "Al Newkirk <awncorp\@cpan.org>",
+  "ABSTRACT" => "Simple Command-Line Interfaces",
+  "AUTHOR" => "Al Newkirk <anewkirk\@ana.io>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
@@ -20,15 +20,29 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
-    "Getopt::Long" => 0,
-    "Validation::Class" => 0
+    "Smart::Options" => "0.053",
+    "Validation::Class" => "7.900052"
   },
-  "VERSION" => "0.11",
+  "TEST_REQUIRES" => {},
+  "VERSION" => "0.120000",
   "test" => {
     "TESTS" => "t/*.t"
   }
 );
 
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
+  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
+  for my $mod ( keys %$tr ) {
+    if ( exists $br->{$mod} ) {
+      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
+    }
+    else {
+      $br->{$mod} = $tr->{$mod};
+    }
+  }
+}
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
   my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};

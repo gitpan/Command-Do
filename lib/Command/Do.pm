@@ -1,90 +1,80 @@
-# ABSTRACT: The power of the Sun in the palm of your hand
+# ABSTRACT: Simple Command-Line Interfaces
 
 package Command::Do;
-{
-    $Command::Do::VERSION = '0.11';
-}
-
-BEGIN {
-
-    our $ARGV = [@ARGV];
-
-    use Getopt::Long;
-    Getopt::Long::Configure(qw(pass_through));
-
-}
 
 use Validation::Class;
 use Validation::Class::Exporter;
+use Smart::Options;
 
-our $VERSION = '0.11';    # VERSION
+our $VERSION = '0.120000'; # VERSION
 
-Validation::Class::Exporter->apply_spec(settings => [base => ['Command::Do']]);
+Validation::Class::Exporter->apply_spec(
+    settings => ['base' => ['Command::Do']],
+    routines => ['command', 'execute']
+);
 
-build sub {
 
-    @ARGV = @$Command::Do::ARGV;    # always restore @ARGV
+sub command {
+    my ($name, $code) = ! $_[1] ? ('default', $_[0]) : (@_);
+    caller->prototype->configuration->builders->add(sub{
+        my ($self) = @_;
 
-    my $self = shift;
+        die "Error creating command $name: that command already exists"
+            if defined $self->stash("command.commands.$name");
 
-    # build an opt sepc
-    my %opt_spec = ();
+        $self->stash("command.commands.$name" => $code);
+    });
 
-    while (my ($name, $opts) = each(%{$self->fields})) {
+    return;
+}
 
-        if (defined $opts->{optspec}) {
+sub execute {
+    my ($self, @args) = @_;
 
-            my $conf = $name;
+    $self->stash('command.options' => Smart::Options->new);
 
-            $conf .= "!" unless $opts->{optspec};
+    my $options   = $self->stash("command.options")->parse(@args);
+    my $arguments = delete $options->{'_'} // [];
 
-            if ($opts->{alias}) {
+    $self->params->add($options);
+    $self->prototype->normalize($self);
 
-                $conf = (
-                    "ARRAY" eq ref $opts->{alias}
-                    ? join "|",
-                    @{$opts->{alias}}
-                    : "$opts->{alias}"
-                ) . "|$conf";
-
+    if (defined $arguments->[0]) {
+        my $command = $arguments->[0];
+        if (defined $command) {
+            my $code = $self->stash("command.commands.$command");
+            if (defined $code) {
+                if ('CODE' eq ref $code) {
+                    return $code->($self, $options, $arguments);
+                }
             }
-
-            $conf .=
-                $opts->{optspec} =~ /^=/
-              ? $opts->{optspec}
-              : "=$opts->{optspec}";
-
-            $opt_spec{$conf} = \$self->params->{$name};
-
         }
-
+    }
+    else {
+        my $code = $self->stash("command.commands.default");
+        if (defined $code) {
+            if ('CODE' eq ref $code) {
+                return $code->($self, $options, $arguments);
+            }
+        }
     }
 
-    GetOptions %opt_spec;
-
-    return $self;
-
-};
-
-# the optspec directive specifies the Getopt::Long option specification
-# for a given field, since there is no validation involved the following
-# code exists solely to register the new optspec directive.
-
-dir optspec => sub {1};    #noop
-
+    return;
+}
 
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
 
-Command::Do - The power of the Sun in the palm of your hand
+Command::Do - Simple Command-Line Interfaces
 
 =head1 VERSION
 
-version 0.11
+version 0.120000
 
 =head1 SYNOPSIS
 
@@ -98,161 +88,65 @@ in lib/YourCmd.pm
     package YourCmd;
     use Command::Do;
 
-    fld name => {
-        required => 1,
-        alias    => 'n',
-        optspec  => '=s'
+    field name => {
+        alias   => 'n',
+        filters => ['trim', 'strip', 'titlecase'],
+        default => 'Gorgeous'
     };
 
-    mth run => {
+    command sub {
+        my ($self, $options, $args) = @_;
 
-        input => ['name'],
-        using => sub {
-
-            exit print "You sure have a nice name, ", shift->name, "\n";
-
+        if ($self->validate('name')) {
+            printf "You sure have a nice name, %s\n", $self->name;
         }
-
     };
 
-and, finally, at the command line:
+and, finally, on the command line:
 
-    $ yourcmd --name "Handsome"
+    $ yourcmd
+    You sure have a nice name, Gorgeous
+
+    $ yourcmd --name=handsome
     You sure have a nice name, Handsome
+
+    $ yourcmd -n=beautiful
+    You sure have a nice name, Beautiful
 
 =head1 DESCRIPTION
 
-Command::Do is an extremely easy method for creating, validating, executing, and
-organizing command-line applications. Command::Do inherits most of its
-functionality from the ever-awesome L<Validation::Class> and L<Getopt::Long>.
+Command::Do is a simple toolkit for building simple yet sophisticated
+command-line applications. It includes very little magic (this is a feature,
+not a bug) and is useful when creating, validating, executing, and organizing
+command-line applications and actions. Command::Do inherits its functionality
+from L<Validation::Class> which makes it and any namespace derived from it a
+Validation::Class, which allows you to focus-on and describe your command-line
+arguments and how they should be validated. Command::Do also uses
+L<Smart::Options> for parsing command-line options.
 
-Command::Do is both simple, effective and anti-complicated. It is very
-unassumming and flexible. It does not impose a particular application
-configuration and its dependencies are trivial.
+Command::Do is very unassumming as thus flexible. It does not impose a
+particular application configuration and its dependencies are trivial and
+easily fatpacked. Command::Do does not render usage-text or auto-validate
+arguments, it simply provides you with the tools to do so wrapped-up in a
+nice DSL.
 
-... sometimes you need an all-in-one command script:
-
-    package yourcmd;
-    use Command::Do;
-
-    mixin all  => {
-        filters => [qw/trim strip/]
-    };
-
-    field file => {
-        mixin   => 'all',
-        optspec => 's@', # 100% Getopt::Long Compliant
-        alias   => ['f'] # directive is attached to the option spec
-    };
-
-    # self-validating routines
-    method run => {
-
-        input => ['file'],
-        using => sub {
-
-            # because the opt_spec is s@, file is always an array
-            exit print join "\n", @{shift->file};
-
-        }
-
-    };
-
-    yourcmd->new->run;
-
-... sometimes you need a suite of commands:
-
-    package yourcmd;
-    use Command::Do;
-    set
-    {
-        # each command is independent and can invoke sub-classes
-        classes => 1, # loads and registers yourcmd::*
-
-    };
-
-    # pass args to children
-    Getopt::Long::Configure(qw(pass_through));
-
-    # the child command
-    fld command => {
-
-        required   => 1,
-        min_length => 2,
-        filters    => ['trim', 'strip', sub { $_[0] =~ s/\W/\_/g; $_[0] }]
-
-    };
-
-    # happens at instantiation
-    build sub {
-
-        my $self = shift;
-
-        $self->command(shift @ARGV);
-
-        return $self;
-
-    };
-
-    sub run {
-
-        my $self = shift;
-
-        my $command = $self->command;
-
-        die $self->error_to_string("\n") unless $command;
-
-        # invokes child command using the class method ...
-        # see Validation::Class
-
-        my $subcmd = $self->class($command); # load lib/YourCmd/SubCmd.pm
-
-        return $subcmd->run;
-
-    };
-
-    yourcmd->new->run;
-
-Please note: Command::Do is very minimalistic and tries to remain unassuming,
-each class field (see L<Validation::Class>) that is to be used as a command line
-option must have an C<optspec> directive defined. The optspec directive should
-be a valid L<Getopt::Long> option specification minus a name and aliases which
-are deduced from the field name and alias directive.
-
-    package MyCommand;
-    use Command::Do;
-
-    field verbose => {
-        optspec => '', # sets flag, same as '!'
-        alias   => 'v'
-    };
-
-    # this is the equivalent to the following Getopt::Long statement
-    # GetOptions('verbose|v!' => \$variable);
-
-Furthermore, in addition to being a class that represents a command that does
-stuff, Command::Do is also described as follows:
-
-    com-man-do: A soldier specially trained to carry out raids.
-
-    In English, the term commando means a specific kind of individual soldier or
-    military unit. In contemporary usage, commando usually means elite light
-    infantry and/or special operations forces units, specializing in amphibious
-    landings, parachuting, rappelling and similar techniques, to conduct and
-    effect attacks. (per wikipedia)
-
-... which is how I like to think about the command-line scripts I author.
+The name Command::Do is meant to convey the idea, command-and-do, i.e., write
+a command and do something! It is also a play on the word commando which is
+defined as a soldier specially trained to carry out raids; In English, the
+term commando usually means a person in an elite light infantry and/or special
+operations unit, specializing in amphibious landings, parachuting, rappelling
+and similar techniques, to conduct and effect attacks ... which is how I like
+to think about the command-line scripts I author.
 
 =head1 AUTHOR
 
-Al Newkirk <awncorp@cpan.org>
+Al Newkirk <anewkirk@ana.io>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by awncorp.
+This software is copyright (c) 2013 by Al Newkirk.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

@@ -1,10 +1,10 @@
-CHANGES
+Changes
 LICENSE
 MANIFEST
 META.yml
 Makefile.PL
 README
 README.mkdn
-eg/script.pl
+cpanfile
 lib/Command/Do.pm
 t/00-load.t
