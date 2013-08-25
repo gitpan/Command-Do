@@ -1,10 +1,26 @@
 ==================================================
-Changes from 2012-08-24 00:00:00 +0000 to present.
+Changes from 2012-08-25 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120001 at 2013-08-24 16:34:46 +0000
+version 0.120002 at 2013-08-25 04:35:45 +0000
 ---------------------------------------------
+
+  Change: c4c38486aab2f2725466d1aa8db53ce29219d3a5
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-08-25 00:35:17 +0000
+
+    updated documentation with alternate use-case 
+
+---------------------------------------------
+version 0.120001 at 2013-08-24 16:34:50 +0000
+---------------------------------------------
+
+  Change: 044493048d0086a54f52de5e8640fb20b7ca6adc
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-08-24 12:34:50 +0000
+
+    v0.120001 
 
   Change: 3714a6df87f5f754aff430e7d3a376be7071dd67
   Author: Al Newkirk <anewkirk@ana.io>

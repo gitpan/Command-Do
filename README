@@ -2,17 +2,13 @@ NAME
     Command::Do - Simple Command-Line Interfaces
 
 VERSION
-    version 0.120001
+    version 0.120002
 
 SYNOPSIS
-    in yourcmd:
-
-        use YourCmd;
-        YourCmd->new->run;
-
     in lib/YourCmd.pm
 
         package YourCmd;
+
         use Command::Do;
 
         field name => {
@@ -21,35 +17,47 @@ SYNOPSIS
             default => 'Gorgeous'
         };
 
-        command sub {
+        command compliment => sub {
             my ($self, $options, $args) = @_;
-
             if ($self->validate('name')) {
                 printf "You sure have a nice name, %s\n", $self->name;
             }
         };
+
+        command sub {
+            my ($self, $options, $args) = @_;
+            print "usage: $0 compliment --name=NAME\n";
+        };
+
+    in yourcmd:
+
+        use YourCmd;
+        YourCmd->new->run;
 
     and, finally, on the command line:
 
         $ yourcmd
         You sure have a nice name, Gorgeous
 
-        $ yourcmd --name=handsome
+        $ yourcmd compliment
+        You sure have a nice name, Gorgeous
+
+        $ yourcmd compliment --name=handsome
         You sure have a nice name, Handsome
 
-        $ yourcmd -n=beautiful
+        $ yourcmd compliment -n=beautiful
         You sure have a nice name, Beautiful
 
 DESCRIPTION
     Command::Do is a simple toolkit for building simple yet sophisticated
     command-line applications. It includes very little magic (this is a
-    feature, not a bug) and is useful when creating, validating, executing,
-    and organizing command-line applications and actions. Command::Do
-    inherits its functionality from Validation::Class which makes it and any
-    namespace derived from it a Validation::Class, which allows you to
-    focus-on and describe your command-line arguments and how they should be
-    validated. Command::Do also uses Smart::Options for parsing command-line
-    options.
+    feature, not a bug), runs quickly, and is useful when creating,
+    validating, executing, and organizing command-line applications and
+    actions. Command::Do inherits its functionality from Validation::Class
+    which makes it and any namespace derived from it a Validation::Class,
+    which allows you to focus-on and describe your command-line arguments
+    and how they should be validated. Command::Do also uses Smart::Options
+    for parsing command-line options.
 
     Command::Do is very unassumming as thus flexible. It does not impose a
     particular application configuration and its dependencies are trivial
