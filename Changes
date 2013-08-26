@@ -3,8 +3,24 @@ Changes from 2012-08-26 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120003 at 2013-08-26 13:23:27 +0000
+version 0.120004 at 2013-08-26 13:35:33 +0000
 ---------------------------------------------
+
+  Change: 74f7059fbe641ed1afef12044593ab96631cc724
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-08-26 09:35:10 +0000
+
+    fixed typos and a serious bug caused by order-of-arguments 
+
+---------------------------------------------
+version 0.120003 at 2013-08-26 13:23:32 +0000
+---------------------------------------------
+
+  Change: 891cfae1e99b3b978642f30fd404be538c0740b3
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-08-26 09:23:32 +0000
+
+    v0.120003 
 
   Change: e12c08f98fe54e8371d64c03c3dedde2207981a1
   Author: Al Newkirk <anewkirk@ana.io>

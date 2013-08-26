@@ -6,7 +6,7 @@ use Validation::Class;
 use Validation::Class::Exporter;
 use Smart::Options;
 
-our $VERSION = '0.120003'; # VERSION
+our $VERSION = '0.120004'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -16,7 +16,7 @@ Validation::Class::Exporter->apply_spec(
 
 
 sub command {
-    my ($name, $code) = (pop, pop);
+    my ($code, $name) = (pop, pop);
 
     $name //= 'default';
 
@@ -79,7 +79,7 @@ Command::Do - Simple Command-Line Interfaces
 
 =head1 VERSION
 
-version 0.120003
+version 0.120004
 
 =head1 SYNOPSIS
 
@@ -135,8 +135,8 @@ applications and actions. Command::Do inherits most of its functionality from
 L<Validation::Class> which allows you to focus on and describe your
 command-line arguments and how they should be validated. Command::Do also uses
 L<Smart::Options> for parsing command-line options. Command::Do is very
-unassumming as thus flexible. It does not impose a particular application
-configuration and its dependencies are trivial and easily fatpacked.
+unassuming as thus flexible. It does not impose a particular application
+configuration and its dependencies are trivial and easily fat-packed.
 Command::Do does not render usage-text or auto-validate arguments, it simply
 provides you with the tools to do so wrapped-up in a nice DSL.
 
