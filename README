@@ -2,7 +2,7 @@ NAME
     Command::Do - Simple Command-Line Interfaces
 
 VERSION
-    version 0.120002
+    version 0.120003
 
 SYNOPSIS
     in lib/YourCmd.pm
@@ -26,18 +26,18 @@ SYNOPSIS
 
         command sub {
             my ($self, $options, $args) = @_;
-            print "usage: $0 compliment --name=NAME\n";
+            print "Usage: $0 compliment --name=NAME\n";
         };
 
     in yourcmd:
 
         use YourCmd;
-        YourCmd->new->run;
+        YourCmd->new->execute;
 
     and, finally, on the command line:
 
         $ yourcmd
-        You sure have a nice name, Gorgeous
+        Usage: ./yourcmd compliment --name=NAME
 
         $ yourcmd compliment
         You sure have a nice name, Gorgeous
@@ -50,18 +50,15 @@ SYNOPSIS
 
 DESCRIPTION
     Command::Do is a simple toolkit for building simple yet sophisticated
-    command-line applications. It includes very little magic (this is a
-    feature, not a bug), runs quickly, and is useful when creating,
-    validating, executing, and organizing command-line applications and
-    actions. Command::Do inherits its functionality from Validation::Class
-    which makes it and any namespace derived from it a Validation::Class,
-    which allows you to focus-on and describe your command-line arguments
-    and how they should be validated. Command::Do also uses Smart::Options
-    for parsing command-line options.
-
-    Command::Do is very unassumming as thus flexible. It does not impose a
-    particular application configuration and its dependencies are trivial
-    and easily fatpacked. Command::Do does not render usage-text or
+    command-line applications. It includes very little magic, executes
+    quickly, and is useful when creating, validating, executing, and
+    organizing command-line applications and actions. Command::Do inherits
+    most of its functionality from Validation::Class which allows you to
+    focus on and describe your command-line arguments and how they should be
+    validated. Command::Do also uses Smart::Options for parsing command-line
+    options. Command::Do is very unassumming as thus flexible. It does not
+    impose a particular application configuration and its dependencies are
+    trivial and easily fatpacked. Command::Do does not render usage-text or
     auto-validate arguments, it simply provides you with the tools to do so
     wrapped-up in a nice DSL.
 
@@ -73,6 +70,28 @@ DESCRIPTION
     landings, parachuting, rappelling and similar techniques, to conduct and
     effect attacks ... which is how I like to think about the command-line
     scripts I author.
+
+METHODS
+  command
+    The command method is used to register a coderef by name which may be
+    automatically invoked by the execute method if it's name matching the
+    first argument to the execute method. The command method ca be passed a
+    coderef, or a name and coderef. The coderef, when executed will be
+    passed an instance of the current class, a hashref of command-line
+    options, and an arrayref of extra command-line arguments.
+
+        command name => sub {
+            my ($self, $options, $arguments) = @_;
+        };
+
+  execute
+    The execute method is used to process the command-line request by
+    parsing the options and arguments and finding a matching action/routine
+    and executing it. The execute method can take a list of
+    options/arguments but by default uses @ARGV.
+
+        my $self = YourCmd->new;
+        $self->execute;
 
 AUTHOR
     Al Newkirk <anewkirk@ana.io>

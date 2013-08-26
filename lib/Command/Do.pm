@@ -6,7 +6,7 @@ use Validation::Class;
 use Validation::Class::Exporter;
 use Smart::Options;
 
-our $VERSION = '0.120002'; # VERSION
+our $VERSION = '0.120003'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -14,8 +14,12 @@ Validation::Class::Exporter->apply_spec(
 );
 
 
+
 sub command {
-    my ($name, $code) = ! $_[1] ? ('default', $_[0]) : (@_);
+    my ($name, $code) = (pop, pop);
+
+    $name //= 'default';
+
     caller->prototype->configuration->builders->add(sub{
         my ($self) = @_;
 
@@ -27,6 +31,7 @@ sub command {
 
     return;
 }
+
 
 sub execute {
     my ($self, @args) = @_;
@@ -74,7 +79,7 @@ Command::Do - Simple Command-Line Interfaces
 
 =head1 VERSION
 
-version 0.120002
+version 0.120003
 
 =head1 SYNOPSIS
 
@@ -99,18 +104,18 @@ in lib/YourCmd.pm
 
     command sub {
         my ($self, $options, $args) = @_;
-        print "usage: $0 compliment --name=NAME\n";
+        print "Usage: $0 compliment --name=NAME\n";
     };
 
 in yourcmd:
 
     use YourCmd;
-    YourCmd->new->run;
+    YourCmd->new->execute;
 
 and, finally, on the command line:
 
     $ yourcmd
-    You sure have a nice name, Gorgeous
+    Usage: ./yourcmd compliment --name=NAME
 
     $ yourcmd compliment
     You sure have a nice name, Gorgeous
@@ -124,19 +129,16 @@ and, finally, on the command line:
 =head1 DESCRIPTION
 
 Command::Do is a simple toolkit for building simple yet sophisticated
-command-line applications. It includes very little magic (this is a feature,
-not a bug), runs quickly, and is useful when creating, validating, executing,
-and organizing command-line applications and actions. Command::Do inherits its
-functionality from L<Validation::Class> which makes it and any namespace
-derived from it a Validation::Class, which allows you to focus-on and describe
-your command-line arguments and how they should be validated. Command::Do also
-uses L<Smart::Options> for parsing command-line options.
-
-Command::Do is very unassumming as thus flexible. It does not impose a
-particular application configuration and its dependencies are trivial and
-easily fatpacked. Command::Do does not render usage-text or auto-validate
-arguments, it simply provides you with the tools to do so wrapped-up in a
-nice DSL.
+command-line applications. It includes very little magic, executes quickly,
+and is useful when creating, validating, executing, and organizing command-line
+applications and actions. Command::Do inherits most of its functionality from
+L<Validation::Class> which allows you to focus on and describe your
+command-line arguments and how they should be validated. Command::Do also uses
+L<Smart::Options> for parsing command-line options. Command::Do is very
+unassumming as thus flexible. It does not impose a particular application
+configuration and its dependencies are trivial and easily fatpacked.
+Command::Do does not render usage-text or auto-validate arguments, it simply
+provides you with the tools to do so wrapped-up in a nice DSL.
 
 The name Command::Do is meant to convey the idea, command-and-do, i.e., write
 a command and do something! It is also a play on the word commando which is
@@ -145,6 +147,31 @@ term commando usually means a person in an elite light infantry and/or special
 operations unit, specializing in amphibious landings, parachuting, rappelling
 and similar techniques, to conduct and effect attacks ... which is how I like
 to think about the command-line scripts I author.
+
+=head1 METHODS
+
+=head2 command
+
+The command method is used to register a coderef by name which may be
+automatically invoked by the execute method if it's name matching the first
+argument to the execute method. The command method ca be passed a coderef, or a
+name and coderef. The coderef, when executed will be passed an instance of the
+current class, a hashref of command-line options, and an arrayref of extra
+command-line arguments.
+
+    command name => sub {
+        my ($self, $options, $arguments) = @_;
+    };
+
+=head2 execute
+
+The execute method is used to process the command-line request by parsing the
+options and arguments and finding a matching action/routine and executing it.
+The execute method can take a list of options/arguments but by default uses
+@ARGV.
+
+    my $self = YourCmd->new;
+    $self->execute;
 
 =head1 AUTHOR
 
