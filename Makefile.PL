@@ -2,14 +2,14 @@
 use strict;
 use warnings;
 
-
+use 5.010;
 
 use ExtUtils::MakeMaker 6.30;
 
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Simple Command-Line Interfaces",
+  "ABSTRACT" => "Simple Command-Line Application Framework",
   "AUTHOR" => "Al Newkirk <anewkirk\@ana.io>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
@@ -20,11 +20,12 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
+    "Docopt" => "0.03",
     "Smart::Options" => "0.053",
     "Validation::Class" => "7.900052"
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.120004",
+  "VERSION" => "0.120005",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -1,5 +1,5 @@
 ---
-abstract: 'Simple Command-Line Interfaces'
+abstract: 'Simple Command-Line Application Framework'
 author:
   - 'Al Newkirk <anewkirk@ana.io>'
 build_requires: {}
@@ -13,10 +13,12 @@ meta-spec:
   version: 1.4
 name: Command-Do
 requires:
+  Docopt: 0.03
   Smart::Options: 0.053
   Validation::Class: 7.900052
+  perl: 5.010
 resources:
   bugtracker: https://github.com/alnewkirk/Command-Do/issues
   homepage: http://search.cpan.org/dist/Command-Do/
   repository: git://github.com/alnewkirk/Command-Do.git
-version: 0.120004
+version: 0.120005

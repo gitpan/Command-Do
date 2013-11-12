@@ -1,10 +1,26 @@
 ==================================================
-Changes from 2012-08-26 00:00:00 +0000 to present.
+Changes from 2012-11-12 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120004 at 2013-08-26 13:35:33 +0000
+version 0.120005 at 2013-11-12 07:50:14 +0000
 ---------------------------------------------
+
+  Change: 06c5a80ef02199e9b1fda82a85fbc801bedd95a7
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-12 02:49:59 +0000
+
+    rewrote some pod, and integrated docopt 
+
+---------------------------------------------
+version 0.120004 at 2013-08-26 13:35:37 +0000
+---------------------------------------------
+
+  Change: a18f42cd711946fa7d71e73cd22bde39da7ec5d3
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-08-26 09:35:37 +0000
+
+    v0.120004 
 
   Change: 74f7059fbe641ed1afef12044593ab96631cc724
   Author: Al Newkirk <anewkirk@ana.io>
