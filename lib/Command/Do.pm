@@ -10,7 +10,7 @@ use Docopt;
 use Carp 'croak';
 use Scalar::Util 'blessed';
 
-our $VERSION = '0.120006'; # VERSION
+our $VERSION = '0.120007'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -136,7 +136,7 @@ Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120006
+version 0.120007
 
 =head1 SYNOPSIS
 
@@ -151,7 +151,7 @@ A simple script with option and argument parsing.
     };
 
     # example usage
-    $ ./yourcmd --vessel='Cruise Ship'
+    $ ./yourcmd
 
 A simple script with option/argument parsing and input validation.
 
@@ -200,7 +200,7 @@ A simple script with option/argument parsing, input validation, and sub-commands
 
     # example usage
     $ ./yourcmd --vessel=Battleship
-    $ ./yourcmd move --vessel Battleship
+    $ ./yourcmd move --vessel 'Cruise Ship'
     $ ./yourcmd engage
 
 A simple script with option/argument parsing, validation, sub-commands and
@@ -226,8 +226,6 @@ program expects.
         filters => ['trim', 'strip', 'numeric'],
         default => 0
     };
-
-
 
     command new => sub {
         my ($self, $opts, $args) = @_;
@@ -352,6 +350,20 @@ more.
     Options:
         -h --hours  [default: 8]
     };
+
+If the usages text is not registered using this function, Command::Do will
+examine the DATA section for instructions.
+
+    __DATA__
+    yourcmd. does stuff.
+
+    Usage:
+        run         causes the console to run
+        jump        causes the console to jump
+        play        causes the console to play
+
+    Options:
+        -h --hours  [default: 8]
 
 =head1 AUTHOR
 
