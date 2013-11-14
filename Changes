@@ -1,10 +1,26 @@
 ==================================================
-Changes from 2012-11-12 00:00:00 +0000 to present.
+Changes from 2012-11-14 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120005 at 2013-11-12 07:50:14 +0000
+version 0.120006 at 2013-11-14 03:13:12 +0000
 ---------------------------------------------
+
+  Change: ea373433ee968549be0f5d82555666133645b567
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-13 22:13:00 +0000
+
+    rewritten synopsis and added tests and testing framework 
+
+---------------------------------------------
+version 0.120005 at 2013-11-12 07:50:18 +0000
+---------------------------------------------
+
+  Change: 6e7606902ea0fda342ff490ff38a2c3ea8c343f3
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-12 02:50:18 +0000
+
+    v0.120005 
 
   Change: 06c5a80ef02199e9b1fda82a85fbc801bedd95a7
   Author: Al Newkirk <anewkirk@ana.io>

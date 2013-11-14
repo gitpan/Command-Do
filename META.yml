@@ -1,18 +1,21 @@
 ---
-abstract: 'Simple Command-Line Application Framework'
+abstract: 'Command-Line Applications Made Simple'
 author:
   - 'Al Newkirk <anewkirk@ana.io>'
-build_requires: {}
+build_requires:
+  Capture::Tiny: 0
+  perl: 5.010
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.130880'
+generated_by: 'Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: Command-Do
 requires:
+  Capture::Tiny: 0
   Docopt: 0.03
   Smart::Options: 0.053
   Validation::Class: 7.900052
@@ -21,4 +24,4 @@ resources:
   bugtracker: https://github.com/alnewkirk/Command-Do/issues
   homepage: http://search.cpan.org/dist/Command-Do/
   repository: git://github.com/alnewkirk/Command-Do.git
-version: 0.120005
+version: 0.120006

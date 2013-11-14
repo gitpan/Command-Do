@@ -7,4 +7,8 @@ README
 README.mkdn
 cpanfile
 lib/Command/Do.pm
-t/00-load.t
+t/01-load.t
+t/02-test-00-synopsis.t
+t/bin/00-synopsis.pl
+t/bin/01-synopsis.pl
+t/lib/CLI.pm

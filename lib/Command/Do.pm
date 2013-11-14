@@ -1,4 +1,4 @@
-# ABSTRACT: Simple Command-Line Application Framework
+# ABSTRACT: Command-Line Applications Made Simple
 
 package Command::Do;
 
@@ -7,13 +7,14 @@ use Validation::Class;
 use Validation::Class::Exporter;
 use Smart::Options;
 use Docopt;
+use Carp 'croak';
 use Scalar::Util 'blessed';
 
-our $VERSION = '0.120005'; # VERSION
+our $VERSION = '0.120006'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
-    routines => ['command', 'execute']
+    routines => ['command', 'execute', 'usages']
 );
 
 
@@ -21,12 +22,15 @@ Validation::Class::Exporter->apply_spec(
 sub command {
     my ($code, $name) = (pop, pop);
 
+    croak "Bad arguments to the command method" unless
+        'CODE' eq ref $code && ! ref $name;
+
     $name //= 'default';
 
     caller->prototype->configuration->builders->add(sub{
         my ($self) = @_;
 
-        die "Error creating command $name: that command already exists"
+        croak "Error creating command $name: that command already exists"
             if defined $self->stash("command.commands.$name");
 
         $self->stash("command.commands.$name" => $code);
@@ -39,7 +43,7 @@ sub command {
 sub execute {
     my ($self, @args) = @_;
 
-    $self //= caller(0)->new;
+    $self = caller->new unless blessed $self;
     $self->stash('command.options' => Smart::Options->new);
 
     my $usage;
@@ -89,7 +93,7 @@ sub execute {
         }
         else {
             print "$usage\n" if $usage;
-            exit(0);
+            return;
         }
     }
     else {
@@ -99,9 +103,23 @@ sub execute {
         }
         else {
             print "$usage\n" if $usage;
-            exit(0);
+            return;
         }
     }
+
+    return;
+}
+
+
+sub usages {
+    my $text = pop;
+
+    croak "Bad arguments to the usages method" unless defined $text;
+
+    caller->prototype->configuration->builders->add(sub{
+        my ($self) = @_;
+        $self->stash('command.usages' => $text);
+    });
 
     return;
 }
@@ -114,30 +132,80 @@ __END__
 
 =head1 NAME
 
-Command::Do - Simple Command-Line Application Framework
+Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120005
+version 0.120006
 
 =head1 SYNOPSIS
 
-in yourcmd:
+A simple script with option and argument parsing.
 
     use Command::Do;
 
+    # default command (execute runs on-load)
     execute command sub {
         my ($self, $opts, $args) = @_;
         printf "You sunk my %s\n", $opts->{vessel} || 'Battleship';
     };
 
-However, there are times when you're not creating one-off/throw-away scripts and
-you actually care about maintaining, validating and documenting your command-line
-applications. The follow is an example of the power and simplicity of using
-Command::Do, please see L<Validation::Class> for more information on creating
-field definitions.
+    # example usage
+    $ ./yourcmd --vessel='Cruise Ship'
 
-in lib/YourCmd.pm
+A simple script with option/argument parsing and input validation.
+
+    use Command::Do;
+
+    field vessel => {
+        required => 1,
+        filters  => ['trim','strip','titlecase'],
+        default  => 'Battleship'
+    };
+
+    # default command (execute runs on-load)
+    execute command sub {
+        my ($self, $opts, $args) = @_;
+        printf "You sunk my %s\n", $self->vessel;
+    };
+
+    # example usage
+    $ ./yourcmd --vessel Yacht
+
+A simple script with option/argument parsing, input validation, and sub-commands.
+
+    use Command::Do;
+
+    field vessel => {
+        required => 1,
+        filters  => ['trim','strip','titlecase'],
+        default  => 'Battleship'
+    };
+
+    command move => sub {
+        my ($self, $opts, $args) = @_;
+        printf "Relocating your %s\n", $self->vessel;
+    };
+
+    command engage => sub {
+        my ($self, $opts, $args) = @_;
+        printf "Your %s has engaged enemy aircrafts\n", $self->vessel;
+    };
+
+    # default command (execute runs on-load)
+    execute command sub {
+        my ($self, $opts, $args) = @_;
+        printf "You sunk my %s\n", $self->vessel;
+    };
+
+    # example usage
+    $ ./yourcmd --vessel=Battleship
+    $ ./yourcmd move --vessel Battleship
+    $ ./yourcmd engage
+
+A simple script with option/argument parsing, validation, sub-commands and
+documentation. Let your documentation determine which options and arguments your
+program expects.
 
     package YourCmd;
 
@@ -159,25 +227,34 @@ in lib/YourCmd.pm
         default => 0
     };
 
+
+
     command new => sub {
         my ($self, $opts, $args) = @_;
-        $self->validate('name') or $self->render_errors;
+        $self->validate('name')
+            or $self->render_errors;
+
         # create new ship
     };
 
-    command move => sub {
+    command evade => sub {
         my ($self, $opts, $args) = @_;
-        $self->validate('name', 'y_axis', 'x_axis') or $self->render_errors;
+        $self->validate('name', 'y_axis', 'x_axis')
+            or $self->render_errors;
+
         # move ship to different coordinates
         # e.g. using $opts->{speed} which defaults to 10
     };
 
-    command shoot => sub {
+    command submerge => sub {
         my ($self, $opts, $args) = @_;
-        $self->validate('name', 'x_axis', 'y_axis') or $self->render_errors;
-        # fire projectiles from ship
+        $self->validate('name', 'x_axis', 'y_axis')
+            or $self->render_errors;
+
+        # cause ship to be under water
     };
 
+    # roll your own output rendering
     sub render_errors {
         my ($self) = @_;
         print STDERR $self->errors_to_string, "\n";
@@ -186,28 +263,25 @@ in lib/YourCmd.pm
 
     1;
 
+    # The DATA section will be render to STDOUT automatically unless the default
+    # command or a sub-command matched the execution
+
     __DATA__
 
     Battleship Script.
 
     Usage:
         yourcmd new <name>
-        yourcmd move <name> <x_axis> <y_axis> [--speed=<kn>]
-        yourcmd shoot <name> <x_axis> <y_axis>
+        yourcmd evade <name> <x_axis> <y_axis> [--speed=<kn>]
+        yourcmd submerge <name> <x_axis> <y_axis>
 
     Options:
         --speed=<kn>  Speed in knots [default: 10].
 
-in yourcmd:
-
-    use YourCmd;
-    YourCmd->new->execute;
-
-and, finally, on the command line:
-
-    $ yourcmd new explorer
-    $ yourcmd move explorer 10 10
-    $ yourcmd shoot explorer
+As depicted, you can opt in or out of most all features. Please see
+L<Validation::Class> for more information on creating field definitions for
+validation, and see L<Docopt> for more information on the usage-text format and
+parser specification.
 
 =head1 DESCRIPTION
 
@@ -224,7 +298,7 @@ and easily fat-packed. Command::Do simply provides you with the tools to create
 simple or sophisticated command-line interfaces, all wrapped-up in a nice DSL.
 
 The name Command::Do is meant to convey the idea, command-and-do, i.e., write a
-command and do something! Leave the parsing, routing, validating, exeception
+command and do something! Leave the parsing, routing, validating, exception
 handling and execution to the framework. Command::Do inherits all methods from
 L<Validation::Class> and implements the following new ones.
 
@@ -241,8 +315,10 @@ command-line arguments. If passed a coderef without an associated name, that
 routine will be registered as the default routine to be executed by default
 if/when no other named routines match.
 
+    # code to be execute when <name> matches the first argument
     command name => sub {
         my ($self, $options, $arguments) = @_;
+        ...
     };
 
 =head2 execute
@@ -253,8 +329,29 @@ routine and executing it. The execute method can take a list of arguments but
 defaults to using @ARGV. This method can also be used as a function to initiate
 the parsing and execution process from within a script.
 
+    # instantiate and execute from anywhere, using execute as a function
+    # will cause the code to execute whenever/wherever loaded
     my $self = YourCmd->new;
     $self->execute;
+
+=head2 usages
+
+The usages function/method is used to register the L<Docopt> compatible
+command-line interface specification. This specification will be parsed for
+instructions, e.g. default-values, constraints, execution patterns, options and
+more.
+
+    usages q{
+    yourcmd. does stuff.
+
+    Usage:
+        run         causes the console to run
+        jump        causes the console to jump
+        play        causes the console to play
+
+    Options:
+        -h --hours  [default: 8]
+    };
 
 =head1 AUTHOR
 
