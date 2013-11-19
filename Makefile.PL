@@ -20,7 +20,6 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
-    "Capture::Tiny" => 0,
     "Docopt" => "0.03",
     "Smart::Options" => "0.053",
     "Validation::Class" => "7.900052"
@@ -28,7 +27,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Capture::Tiny" => 0
   },
-  "VERSION" => "0.120007",
+  "VERSION" => "0.120008",
   "test" => {
     "TESTS" => "t/*.t"
   }

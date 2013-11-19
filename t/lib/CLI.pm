@@ -17,7 +17,8 @@ sub execute {
     my %result;
 
     @result{qw(stdout stderr exit)} = map { chomp; $_ } capture {
-        system 'perl', "-I" . $FindBin::Bin . '/../lib', $self->{app}, (
+        my @inc = map { -I => $_ } @INC;
+        system 'perl', @inc, $self->{app}, (
             $config{input} ? @{$config{input}} : ()
         );
     };

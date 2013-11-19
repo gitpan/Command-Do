@@ -10,7 +10,7 @@ use Docopt;
 use Carp 'croak';
 use Scalar::Util 'blessed';
 
-our $VERSION = '0.120007'; # VERSION
+our $VERSION = '0.120008'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -136,7 +136,7 @@ Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120007
+version 0.120008
 
 =head1 SYNOPSIS
 
@@ -199,9 +199,9 @@ A simple script with option/argument parsing, input validation, and sub-commands
     };
 
     # example usage
-    $ ./yourcmd --vessel=Battleship
-    $ ./yourcmd move --vessel 'Cruise Ship'
     $ ./yourcmd engage
+    $ ./yourcmd move --vessel 'Cruise Ship'
+    $ ./yourcmd --vessel=Battleship
 
 A simple script with option/argument parsing, validation, sub-commands and
 documentation. Let your documentation determine which options and arguments your

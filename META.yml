@@ -15,7 +15,6 @@ meta-spec:
   version: 1.4
 name: Command-Do
 requires:
-  Capture::Tiny: 0
   Docopt: 0.03
   Smart::Options: 0.053
   Validation::Class: 7.900052
@@ -24,4 +23,4 @@ resources:
   bugtracker: https://github.com/alnewkirk/Command-Do/issues
   homepage: http://search.cpan.org/dist/Command-Do/
   repository: git://github.com/alnewkirk/Command-Do.git
-version: 0.120007
+version: 0.120008

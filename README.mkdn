@@ -4,7 +4,7 @@ Command::Do - Command-Line Applications Made Simple
 
 # VERSION
 
-version 0.120007
+version 0.120008
 
 # SYNOPSIS
 
@@ -67,9 +67,9 @@ A simple script with option/argument parsing, input validation, and sub-commands
     };
 
     # example usage
-    $ ./yourcmd --vessel=Battleship
-    $ ./yourcmd move --vessel 'Cruise Ship'
     $ ./yourcmd engage
+    $ ./yourcmd move --vessel 'Cruise Ship'
+    $ ./yourcmd --vessel=Battleship
 
 A simple script with option/argument parsing, validation, sub-commands and
 documentation. Let your documentation determine which options and arguments your
