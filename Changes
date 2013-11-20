@@ -1,10 +1,32 @@
 ==================================================
-Changes from 2012-11-19 00:00:00 +0000 to present.
+Changes from 2012-11-20 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120008 at 2013-11-19 19:16:11 +0000
+version 0.120009 at 2013-11-20 09:49:54 +0000
 ---------------------------------------------
+
+  Change: b1073125a17742092d9c1fa6f75028fba6fb6750
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-20 04:49:40 +0000
+
+    removed Capture::Tiny 
+
+  Change: 6d06eeec9901ca8ba5a4cd72ba0ddc94a38e0d31
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-20 04:49:13 +0000
+
+    removed Capture::Tiny 
+
+---------------------------------------------
+version 0.120008 at 2013-11-19 19:16:18 +0000
+---------------------------------------------
+
+  Change: 515c2802c1131f9c6469ae22483df4b632faa3d7
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-19 14:16:18 +0000
+
+    v0.120008 
 
   Change: 8b4a195daa4ab0f1d8ab16be2e7984aa6b6941ce
   Author: Al Newkirk <anewkirk@ana.io>

@@ -4,7 +4,6 @@ requires "Validation::Class" => "7.900052";
 requires "perl" => "5.010";
 
 on 'test' => sub {
-  requires "Capture::Tiny" => "0";
   requires "perl" => "5.010";
 };
 

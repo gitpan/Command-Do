@@ -1,6 +1,4 @@
-#!/usr/bin/env perl
-
-package YourCmd;
+package Test::Command::Class::SynopsisPlus;
 
 use Command::Do;
 
@@ -41,8 +39,7 @@ command shoot => sub {
 
 sub render_errors {
     my ($self) = @_;
-    print STDERR $self->errors_to_string, "\n";
-    exit(1);
+    return $self->errors_to_string;
 }
 
 1;

@@ -10,7 +10,7 @@ use Docopt;
 use Carp 'croak';
 use Scalar::Util 'blessed';
 
-our $VERSION = '0.120008'; # VERSION
+our $VERSION = '0.120009'; # VERSION
 
 Validation::Class::Exporter->apply_spec(
     settings => ['base' => ['Command::Do']],
@@ -46,13 +46,14 @@ sub execute {
     $self = caller->new unless blessed $self;
     $self->stash('command.options' => Smart::Options->new);
 
-    my $usage;
-    unless ($self->stash('command.usages')) {
+    my $usage = $self->stash('command.usages');
+    unless ($usage) {
         my $pkg = ref $self;
         my $dat = do { no strict 'refs'; \*{"$pkg\::DATA"} };
         unless (eof $dat) {
             binmode $dat, ':raw';
-            $self->stash('command.usages' => ($usage = join '', (<$dat>)));
+            $usage = join '', (<$dat>);
+            $self->stash('command.usages' => $usage);
         }
     }
 
@@ -85,27 +86,19 @@ sub execute {
 
     $options = $self->params->hash;
 
+    # execute sub-command (if applicable)
     if (defined $arguments->[0]) {
         my $command = $arguments->[0];
-        my $code = $self->stash("command.commands.$command");
-        if ('CODE' eq ref $code) {
-            return $code->($self, $options, $arguments);
-        }
-        else {
-            print "$usage\n" if $usage;
-            return;
-        }
+        my $code    = $self->stash("command.commands.$command");
+
+        return $code->($self, $options, $arguments)
+            if 'CODE' eq ref $code;
     }
-    else {
-        my $code = $self->stash("command.commands.default");
-        if ('CODE' eq ref $code) {
-            return $code->($self, $options, $arguments);
-        }
-        else {
-            print "$usage\n" if $usage;
-            return;
-        }
-    }
+
+    # execute default command (if applicable)
+    my $code = $self->stash("command.commands.default");
+    return $code->($self, $options, $arguments, $usage)
+        if 'CODE' eq ref $code;
 
     return;
 }
@@ -136,7 +129,7 @@ Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120008
+version 0.120009
 
 =head1 SYNOPSIS
 
@@ -313,9 +306,17 @@ command-line arguments. If passed a coderef without an associated name, that
 routine will be registered as the default routine to be executed by default
 if/when no other named routines match.
 
-    # code to be execute when <name> matches the first argument
+    # sub-command to be execute when <name> matches the first argument
     command name => sub {
         my ($self, $options, $arguments) = @_;
+        ...
+    };
+
+    # default command to be execute unless a sub-command matches the request
+    # the default command is passed an additional argument, the usages-text
+    # which can be print to the console
+    command name => sub {
+        my ($self, $options, $arguments, $usages_text) = @_;
         ...
     };
 

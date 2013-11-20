@@ -24,10 +24,8 @@ my %WriteMakefileArgs = (
     "Smart::Options" => "0.053",
     "Validation::Class" => "7.900052"
   },
-  "TEST_REQUIRES" => {
-    "Capture::Tiny" => 0
-  },
-  "VERSION" => "0.120008",
+  "TEST_REQUIRES" => {},
+  "VERSION" => "0.120009",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -35,7 +33,6 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "Capture::Tiny" => 0,
   "Docopt" => "0.03",
   "Smart::Options" => "0.053",
   "Validation::Class" => "7.900052"

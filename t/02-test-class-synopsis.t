@@ -4,49 +4,47 @@ BEGIN {
 }
 
 use Test::More;
-use CLI;
+use Test::Command;
+use Test::Command::Class::Synopsis;
 
-my $cli = CLI->new('/bin/00-synopsis.pl');
+my $command = Test::Command->new(
+    class => Test::Command::Class::Synopsis->new
+);
 
-$cli->execute(
+$command->execute(
     output => {
-        channel  => 'stdout',
         contains => qr/you sunk my battleship/i,
         message  => 'you sunk my battleship'
     }
 );
 
-$cli->execute(
+$command->execute(
     input  => [],
     output => {
-        channel  => 'stdout',
         contains => qr/you sunk my battleship/i,
         message  => 'you sunk my battleship'
     }
 );
 
-$cli->execute(
+$command->execute(
     input  => ['--vessel', 'sailboat'],
     output => {
-        channel  => 'stdout',
         contains => qr/you sunk my sailboat/i,
         message  => 'you sunk my sailboat'
     }
 );
 
-$cli->execute(
+$command->execute(
     input  => ['--vessel', 'submarine'],
     output => {
-        channel  => 'stdout',
         contains => qr/you sunk my submarine/i,
         message  => 'you sunk my submarine'
     }
 );
 
-$cli->execute(
+$command->execute(
     input  => ['--vessel', 'submarine', '--vesion'],
     output => {
-        channel  => 'stdout',
         contains => qr/you sunk my submarine/i,
         message  => 'you sunk my submarine'
     }

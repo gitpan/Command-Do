@@ -8,7 +8,7 @@ README.mkdn
 cpanfile
 lib/Command/Do.pm
 t/01-load.t
-t/02-test-00-synopsis.t
-t/bin/00-synopsis.pl
-t/bin/01-synopsis.pl
-t/lib/CLI.pm
+t/02-test-class-synopsis.t
+t/lib/Test/Command.pm
+t/lib/Test/Command/Class/Synopsis.pm
+t/lib/Test/Command/Class/SynopsisPlus.pm
