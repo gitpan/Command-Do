@@ -3,8 +3,24 @@ Changes from 2012-11-25 00:00:00 +0000 to present.
 ==================================================
 
 ---------------------------------------------
-version 0.120010 at 2013-11-25 06:11:48 +0000
+version 0.120011 at 2013-11-25 14:06:15 +0000
 ---------------------------------------------
+
+  Change: 3a1a7f2741832392fcab64edf855f010615cce2b
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-25 09:06:00 +0000
+
+    fixed minor bug in command-builder present when re-instantiating 
+
+---------------------------------------------
+version 0.120010 at 2013-11-25 06:11:52 +0000
+---------------------------------------------
+
+  Change: ee2f57aba65ca01bffc977793bf0d6ab6dd799e4
+  Author: Al Newkirk <anewkirk@ana.io>
+  Date : 2013-11-25 01:11:52 +0000
+
+    v0.120010 
 
   Change: 40add59bf593cfa4fffa8ff36d85f29d6a044e08
   Author: Al Newkirk <anewkirk@ana.io>

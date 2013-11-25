@@ -2,7 +2,7 @@ NAME
     Command::Do - Command-Line Applications Made Simple
 
 VERSION
-    version 0.120010
+    version 0.120011
 
 SYNOPSIS
     A simple script with option and argument parsing.

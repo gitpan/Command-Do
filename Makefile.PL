@@ -26,7 +26,7 @@ my %WriteMakefileArgs = (
     "Validation::Class" => "7.900054"
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.120010",
+  "VERSION" => "0.120011",
   "test" => {
     "TESTS" => "t/*.t"
   }

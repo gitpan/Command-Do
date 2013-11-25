@@ -11,7 +11,7 @@ use Carp 'croak';
 use Scalar::Util 'blessed';
 use parent 'Exporter::Tiny';
 
-our $VERSION = '0.120010'; # VERSION
+our $VERSION = '0.120011'; # VERSION
 
 our @EXPORT = qw(
     command
@@ -86,10 +86,8 @@ sub command {
     caller->prototype->configuration->builders->add(sub{
         my ($self) = @_;
 
-        croak "Error creating command $name: that command already exists"
-            if defined $self->stash("command.commands.$name");
-
-        $self->stash("command.commands.$name" => $code);
+        $self->stash("command.commands.$name" => $code)
+            unless defined $self->stash("command.commands.$name");
     });
 
     return;
@@ -185,7 +183,7 @@ Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120010
+version 0.120011
 
 =head1 SYNOPSIS
 
