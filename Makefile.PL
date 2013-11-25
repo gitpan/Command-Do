@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.010;
+use 5.010000;
 
 use ExtUtils::MakeMaker 6.30;
 
@@ -21,11 +21,12 @@ my %WriteMakefileArgs = (
   "NAME" => "Command::Do",
   "PREREQ_PM" => {
     "Docopt" => "0.03",
+    "Exporter::Tiny" => "0.030",
     "Smart::Options" => "0.053",
-    "Validation::Class" => "7.900052"
+    "Validation::Class" => "7.900054"
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.120009",
+  "VERSION" => "0.120010",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -34,8 +35,9 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "Docopt" => "0.03",
+  "Exporter::Tiny" => "0.030",
   "Smart::Options" => "0.053",
-  "Validation::Class" => "7.900052"
+  "Validation::Class" => "7.900054"
 );
 
 

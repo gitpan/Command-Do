@@ -2,8 +2,7 @@
 abstract: 'Command-Line Applications Made Simple'
 author:
   - 'Al Newkirk <anewkirk@ana.io>'
-build_requires:
-  perl: 5.010
+build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
@@ -15,11 +14,12 @@ meta-spec:
 name: Command-Do
 requires:
   Docopt: 0.03
+  Exporter::Tiny: 0.030
   Smart::Options: 0.053
-  Validation::Class: 7.900052
-  perl: 5.010
+  Validation::Class: 7.900054
+  perl: v5.10.0
 resources:
   bugtracker: https://github.com/alnewkirk/Command-Do/issues
   homepage: http://search.cpan.org/dist/Command-Do/
   repository: git://github.com/alnewkirk/Command-Do.git
-version: 0.120009
+version: 0.120010

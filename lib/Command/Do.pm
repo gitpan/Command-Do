@@ -2,19 +2,75 @@
 
 package Command::Do;
 
+use 5.10.0;
 use utf8;
 use Validation::Class;
-use Validation::Class::Exporter;
 use Smart::Options;
 use Docopt;
 use Carp 'croak';
 use Scalar::Util 'blessed';
+use parent 'Exporter::Tiny';
 
-our $VERSION = '0.120009'; # VERSION
+our $VERSION = '0.120010'; # VERSION
 
-Validation::Class::Exporter->apply_spec(
-    settings => ['base' => ['Command::Do']],
-    routines => ['command', 'execute', 'usages']
+our @EXPORT = qw(
+    command
+    execute
+    usages
+    prototype
+);
+
+our @EXPORT_OK = qw(
+    command
+    execute
+    usages
+    prototype
+    build
+    directive
+    document
+    field
+    filter
+    message
+    method
+    mixin
+    profile
+);
+
+our %EXPORT_TAGS = (
+    less => [qw(
+        command
+        execute
+        usages
+        prototype
+        field
+        mixin
+    )],
+    more => [qw(
+        command
+        execute
+        usages
+        prototype
+        build
+        directive
+        field
+        filter
+        message
+        mixin
+    )],
+    most => [qw(
+        command
+        execute
+        usages
+        prototype
+        build
+        directive
+        document
+        field
+        filter
+        message
+        mixin
+        profile
+    )]
 );
 
 
@@ -129,7 +185,7 @@ Command::Do - Command-Line Applications Made Simple
 
 =head1 VERSION
 
-version 0.120009
+version 0.120010
 
 =head1 SYNOPSIS
 
@@ -148,7 +204,7 @@ A simple script with option and argument parsing.
 
 A simple script with option/argument parsing and input validation.
 
-    use Command::Do;
+    use Command::Do -less;
 
     field vessel => {
         required => 1,
@@ -167,7 +223,7 @@ A simple script with option/argument parsing and input validation.
 
 A simple script with option/argument parsing, input validation, and sub-commands.
 
-    use Command::Do;
+    use Command::Do -less;
 
     field vessel => {
         required => 1,
@@ -202,7 +258,7 @@ program expects.
 
     package YourCmd;
 
-    use Command::Do;
+    use Command::Do -less;
 
     field name => {
         required  => 1,
@@ -210,12 +266,12 @@ program expects.
         min_alpha => 4,
     };
 
-    field x_axis => {
+    field x => {
         filters => ['trim', 'strip', 'numeric'],
         default => 0
     };
 
-    field y_axis => {
+    field y => {
         filters => ['trim', 'strip', 'numeric'],
         default => 0
     };
@@ -230,7 +286,7 @@ program expects.
 
     command evade => sub {
         my ($self, $opts, $args) = @_;
-        $self->validate('name', 'y_axis', 'x_axis')
+        $self->validate('name', 'y', 'x')
             or $self->render_errors;
 
         # move ship to different coordinates
@@ -239,7 +295,7 @@ program expects.
 
     command submerge => sub {
         my ($self, $opts, $args) = @_;
-        $self->validate('name', 'x_axis', 'y_axis')
+        $self->validate('name', 'x', 'y')
             or $self->render_errors;
 
         # cause ship to be under water
@@ -263,8 +319,8 @@ program expects.
 
     Usage:
         yourcmd new <name>
-        yourcmd evade <name> <x_axis> <y_axis> [--speed=<kn>]
-        yourcmd submerge <name> <x_axis> <y_axis>
+        yourcmd evade <name> <x> <y> [--speed=<kn>]
+        yourcmd submerge <name> <x> <y>
 
     Options:
         --speed=<kn>  Speed in knots [default: 10].
@@ -290,8 +346,10 @@ simple or sophisticated command-line interfaces, all wrapped-up in a nice DSL.
 
 The name Command::Do is meant to convey the idea, command-and-do, i.e., write a
 command and do something! Leave the parsing, routing, validating, exception
-handling and execution to the framework. Command::Do inherits all methods from
-L<Validation::Class> and implements the following new ones.
+handling and execution to the framework. Command::Do inherits the following
+methods from L<Validation::Class>, (command, execute, usages, build, directive,
+document, field, filter, message, method, mixin, profile and prototype) and
+implements the following new ones.
 
 =head1 METHODS
 
